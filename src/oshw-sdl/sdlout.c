@@ -292,8 +292,9 @@ static int createdisplay(void)
 	flags = SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_FULLSCREEN;
 #endif
 
-	sdlg.realscreen = SDL_SetVideoMode(320, 240, 32, flags);
-
+	//sdlg.realscreen = SDL_SetVideoMode(320, 240, 32, flags);
+	sdlg.ScreenSurface = SDL_SetVideoMode(320, 480, 16, SDL_HWSURFACE);
+	sdlg.realscreen = SDL_CreateRGBSurface(SDL_HWSURFACE, 320, 240, 32, 0, 0, 0, 0);
 	sync();
 
 	//DKS new
@@ -741,7 +742,8 @@ int displaygame(void const *state, int timeleft, int besttime, int showhint)
 	displaymsg(FALSE);
 
 	SDL_BlitSurface(sdlg.screen, NULL, sdlg.realscreen, NULL);
-	SDL_Flip(sdlg.realscreen);
+	//SDL_Flip(sdlg.realscreen);
+	myflip();
 
 	return TRUE;
 }

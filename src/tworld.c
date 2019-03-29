@@ -137,6 +137,28 @@ static int quittomainmenu = 0;
 /*
  * Text-mode output functions.
  */
+void myflip(void)
+{
+	SDL_Surface *p = SDL_ConvertSurface(sdlg.realscreen, sdlg.ScreenSurface->format, 0);
+	if(SDL_MUSTLOCK(sdlg.ScreenSurface)) SDL_LockSurface(sdlg.ScreenSurface);
+#if 1
+	SDL_SoftStretch(p, NULL, sdlg.ScreenSurface, NULL);
+#else
+	uint16_t *d = sdlg.ScreenSurface->pixels;
+	uint32_t *s = sdlg.realscreen->pixels, tmp;
+	int x, y;
+	for(y=0; y<240; y++){
+		for(x=0; x<320; x++){
+			tmp = *s++;
+			*d++ = ((tmp & 0x00f80000) >> 8) | ((tmp & 0x0000fc00) >> 5) | ((tmp & 0xf8) >> 3);
+		}
+		d+= 320;
+	}
+	if(SDL_MUSTLOCK(sdlg.ScreenSurface)) SDL_UnlockSurface(sdlg.ScreenSurface);
+#endif
+	SDL_Flip(sdlg.ScreenSurface);
+	SDL_FreeSurface(p);
+}
 
 /* Find a position to break a string inbetween words. The integer at
  * breakpos receives the length of the string prefix less than or
@@ -937,7 +959,8 @@ static int startinput(gamespec *gs)
 	}
 
 	SDL_BlitSurface(sdlg.screen, NULL, sdlg.realscreen, NULL);
-	SDL_Flip(sdlg.realscreen);
+	//SDL_Flip(sdlg.realscreen);
+	myflip();
 
 
 	for (;;) {
@@ -1073,7 +1096,8 @@ static int endinput(gamespec *gs, int newbesttime, int wasbesttime)
 		SDL_BlitSurface(sdlg.oopsbg, NULL, sdlg.screen, &dstrect);
 		SFont_WriteCenter(sdlg.screen, sdlg.font_big, dstrect.y + 4, "OOPS");
 		SDL_BlitSurface(sdlg.screen, NULL, sdlg.realscreen, NULL);
-		SDL_Flip(sdlg.realscreen);
+		//SDL_Flip(sdlg.realscreen);
+		myflip();
 		controlleddelay(750);
 		displaylevelselect = 0;
 		return TRUE;
@@ -1096,11 +1120,13 @@ static int endinput(gamespec *gs, int newbesttime, int wasbesttime)
 		displayendmessage(bscore, tscore, gscore, gs->status, newbesttime, wasbesttime);
 
 		SDL_BlitSurface(sdlg.screen, NULL, sdlg.realscreen, NULL);
-		SDL_Flip(sdlg.realscreen);
+		//SDL_Flip(sdlg.realscreen);
+		myflip();
 		controlleddelay(600);
 		SFont_WriteCenter(sdlg.screen, sdlg.font_tiny, 226, "Press any button");
 		SDL_BlitSurface(sdlg.screen, NULL, sdlg.realscreen, NULL);
-		SDL_Flip(sdlg.realscreen);
+		//SDL_Flip(sdlg.realscreen);
+		myflip();
 
 		anykey();
 		if (gs->status > 0) {
@@ -1214,7 +1240,8 @@ static int ingamemenu(void)
 		controlleddelay(0);
 
 		SDL_BlitSurface(tmpscreen, NULL, sdlg.realscreen, NULL);            
-		SDL_Flip(sdlg.realscreen);
+		//SDL_Flip(sdlg.realscreen);
+		myflip();
 
 		switch (input(FALSE)) {
 			case CmdSouth:
@@ -2534,7 +2561,8 @@ int seriesmenu(seriesdata *series , int seriesindex,
 		}
 
 		SFont_WriteCenter(sdlg.realscreen, sdlg.font_tiny, 12, "Press SELECT to Cancel"); 
-		SDL_Flip(sdlg.realscreen);
+		//SDL_Flip(sdlg.realscreen);
+		myflip();
 
 		controlleddelay(10); // DKS - why be a CPU hog?
 		command = input(FALSE);
@@ -2644,7 +2672,8 @@ int mainmenu(startupdata *start)
 
 
 	SDL_BlitSurface(menusurface, NULL, sdlg.realscreen, NULL);
-	SDL_Flip(sdlg.realscreen);
+	//SDL_Flip(sdlg.realscreen);
+	myflip();
 
 	//DKS - preload the game's tileset sprites, sounds, etc.
 	loadgameresources(Ruleset_None);
@@ -2664,7 +2693,8 @@ int mainmenu(startupdata *start)
 	SDL_FillRect(menusurface, &tmprect, SDL_MapRGB(menusurface->format, 0, 0, 0));
 	SFont_WriteCenter(menusurface, sdlg.font_tiny, 55, "PRESS ANY BUTTON");
 	SDL_BlitSurface(menusurface, NULL, sdlg.realscreen, NULL);	
-	SDL_Flip(sdlg.realscreen);
+	//SDL_Flip(sdlg.realscreen);
+	myflip();
 
 	playmenusong();
 	setkeyboardinputmode(TRUE);
@@ -2790,7 +2820,8 @@ int mainmenu(startupdata *start)
 			//cleardisplay();
 			SDL_BlitSurface(menusurface, NULL, sdlg.screen, NULL);
 			SDL_BlitSurface(sdlg.screen, NULL, sdlg.realscreen, NULL);            
-			SDL_Flip(sdlg.realscreen);
+			//SDL_Flip(sdlg.realscreen);
+			myflip();
 
 			switch (input(FALSE)) {
 				case CmdSouth:
@@ -2938,7 +2969,7 @@ int tworld(int argc, char *argv[])
 #ifdef PLATFORM_GCW
 	// Since GCW uses a read-only squashfs .OPK file for running applications, this makes sense:
 	system("mkdir -p $HOME/.tworld/save ; mkdir -p $HOME/.tworld/data ; mkdir -p $HOME/.tworld/sets");
-	system("mv -n data/* $HOME/.tworld/data/");
+	system("cp data/* $HOME/.tworld/data/");
 #endif
 
 	startupdata	start;

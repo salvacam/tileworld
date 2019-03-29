@@ -72,6 +72,7 @@ typedef	struct oshwglobals
 	SDL_Surface	     *screen;		// the surface to which original tileworld
 	// functions draw (tile drawing, mainly)
 
+	SDL_Surface		*ScreenSurface;	//this is a new surface that now represents
 	SDL_Surface		*realscreen;	//this is a new surface that now represents
 	//the real framebuffer
 

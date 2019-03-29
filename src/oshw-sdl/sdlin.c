@@ -148,7 +148,7 @@ static int		joystickstyle = FALSE;
  * shift, ctl and alt are positive if the key must be down, zero if
  * the key must be up, or negative if it doesn't matter.
  */
-#ifdef PLATFORM_GCW
+#if 1//PLATFORM_GCW
 //DKS - for reference on the GCW:
 //    case  SDLK_UP:          /* Dingoo  D-pad up */
 //    case  SDLK_DOWN:        /* Dingoo  D-pad down */
