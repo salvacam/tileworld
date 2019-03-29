@@ -22,4 +22,6 @@
 *.swo
 
 #tworld executable
-src/tworld
+*.dge
+*.ipk
+*.opk
