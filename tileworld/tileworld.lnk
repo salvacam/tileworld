@@ -1,0 +1,4 @@
+title=Tile World
+description=Tile World port
+exec=/home/retrofw/games/tileworld/tileworld.dge
+clock=600
