@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Tile World
+Comment=Tile World game port
+Exec=tileworld.dge
+Icon=tileworld
+Categories=games;
+Terminal=false
+Type=Application
+StartupNotify=true

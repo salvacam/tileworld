@@ -1,0 +1,10 @@
+Package: tileworld
+Version: 
+Description: RetroGame port of TileWorld
+Section: emus
+Priority: optional
+Maintainer: pingflood
+Architecture: mipsel
+Homepage: https://github.com/pingflood/tileworld
+Depends:
+Source: https://github.com/pingflood/tileworld
