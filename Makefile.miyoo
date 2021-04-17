@@ -1,0 +1,33 @@
+CHAINPREFIX := /opt/miyoo
+CROSS_COMPILE := $(CHAINPREFIX)/usr/bin/arm-linux-
+CC = $(CROSS_COMPILE)gcc
+CXX = $(CROSS_COMPILE)g++
+STRIP = $(CROSS_COMPILE)strip
+
+DEBUG	= 0
+
+SYSROOT     := $(shell $(CC) --print-sysroot)
+SDL_CFLAGS  := $(shell $(SYSROOT)/usr/bin/sdl-config --cflags)
+SDL_LIBS    := $(shell $(SYSROOT)/usr/bin/sdl-config --libs)
+
+#CFLAGS  = -c -g -flto -Wall -D_REENTRANT -DPLATFORM_GCW $(SDL_CFLAGS)
+CFLAGS  = -c -g -flto -Wall -D_REENTRANT -DMIYOO_MODE $(SDL_CFLAGS)
+# LDFLAGS = -flto -lSDL_image -lSDL_gfx -ljpeg -lpng -lz -lSDL_mixer -lvorbisidec -lvorbisfile -lvorbis -lpthread -lgcc -lm -lc $(SDL_LIBS) $(MYFLAGS)
+LDFLAGS = -flto -lSDL_image -lSDL_gfx -ljpeg -lpng -lz -lSDL_mixer -lpthread -lgcc -lm -lc $(SDL_LIBS) $(MYFLAGS)
+SOURCES = src/cmdline.c src/encoding.c src/err.c src/fileio.c src/help.c src/lxlogic.c src/mslogic.c src/play.c src/random.c src/res.c \
+		src/score.c src/series.c src/solution.c src/tworld.c src/unslist.c \
+		src/oshw-sdl/SFont.c src/oshw-sdl/ccicon.c src/oshw-sdl/sdlerr.c src/oshw-sdl/sdlin.c \
+		src/oshw-sdl/sdloshw.c src/oshw-sdl/sdlout.c src/oshw-sdl/sdlsfx.c src/oshw-sdl/sdltext.c \
+		src/oshw-sdl/sdltile.c src/oshw-sdl/sdltimer.c src/oshw-sdl/port_cfg.c
+
+OBJECTS=$(SOURCES:.c=.o)
+TARGET=tileworld/tileworld.dge
+
+all: $(OBJECTS)
+	$(CC) $(OBJECTS) -o $(TARGET) $(LDFLAGS)
+
+.c.o:
+	$(CC) $(CFLAGS) $< -o $@
+
+clean:
+	-rm -f $(OBJECTS) $(TARGET) src/*~ src/*.o src/*.bak src/oshw-sdl/*.o src/oshw-sdl/*.bak src/oshw-sdl/*~

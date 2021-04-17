@@ -2347,6 +2347,8 @@ int parsedatadir(void)
 					}
 				}
 
+
+				#ifndef MIYOO_MODE
 				strcpy(tmpstr, seriesdir);
 				strcat(tmpstr, "/");
 				strcat(tmpstr, newfilename);
@@ -2393,6 +2395,8 @@ int parsedatadir(void)
 						close(fd);
 					}
 				}
+				#endif
+
 			}
 		}
 	}
